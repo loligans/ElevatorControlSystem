@@ -2,6 +2,7 @@
     <PropertyGroup Label="Solution Properties">
         <Nullable>enable</Nullable>
         <LangVersion>latest</LangVersion>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
     </PropertyGroup>
 
     <ItemGroup Label="Expose Internals to Tests">

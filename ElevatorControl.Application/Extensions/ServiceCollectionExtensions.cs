@@ -1,13 +1,14 @@
 ﻿using System;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ElevatorControl.Application.Extensions
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddApplicationServices(this IServiceCollection serviceCollection)
+        public static IServiceCollection AddElevatorApplicationServices(this IServiceCollection serviceCollection)
         {
-            throw new NotImplementedException();
+            serviceCollection.TryAddScoped<IElevatorService, ElevatorService>();
             return serviceCollection;
         }
     }
