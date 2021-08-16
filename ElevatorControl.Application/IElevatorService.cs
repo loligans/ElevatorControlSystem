@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Threading.Tasks;
 using ElevatorControl.Application.Models;
 
 namespace ElevatorControl.Application
@@ -12,14 +11,21 @@ namespace ElevatorControl.Application
         /// <summary>
         /// Adds a floor to the elevators queue
         /// </summary>
-        public Task AddFloorAsync(Floor floor);
+        public void AddFloor(Floor floor);
+
         /// <summary>
         /// Retrieves the list of floors the elevator is currently servicing
         /// </summary>
-        public Task<IEnumerable<Floor>> GetServicingFloorsAsync();
+        public IEnumerable<Floor> GetServicingFloors();
+
         /// <summary>
         /// Gets the next floor that needs to be serviced
         /// </summary>
-        public Task<Floor> GetNextFloorAsync();
+        public Floor? GetNextFloor();
+
+        /// <summary>
+        /// Removes the specified floor from the elevators queue
+        /// </summary>
+        internal Floor? RemoveNextFloor();
     }
 }
