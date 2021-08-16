@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Linq;
 using ElevatorControl.Application.Models;
+using ElevatorControl.Application.Options;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace ElevatorControl.Application
 {
@@ -11,24 +11,53 @@ namespace ElevatorControl.Application
     internal class ElevatorService : IElevatorService
     {
         private readonly ILogger<ElevatorService> _logger;
-        public ElevatorService(ILogger<ElevatorService> logger)
+
+        private readonly object _elevatorQueueLock = new object();
+        private readonly Queue<Floor> _elevatorQueue;
+        private readonly HashSet<int> _floors;
+
+        public ElevatorService(ILogger<ElevatorService> logger, IOptions<ElevatorOptions> options)
         {
             _logger = logger;
+            _elevatorQueue = new Queue<Floor>();
+            _floors = new HashSet<int>(options.Value.Floors);
         }
 
-        public Task AddFloorAsync(Floor floor)
+        public void AddFloor(Floor floor)
         {
-            throw new NotImplementedException();
+            if (!_floors.Contains(floor.Number))
+            {
+                _logger.LogWarning($"Invalid floor number: {floor.Number}");
+                return;
+            }
+            lock (_elevatorQueueLock)
+            {
+                _elevatorQueue.Enqueue(floor);
+            }
         }
 
-        public Task<IEnumerable<Floor>> GetServicingFloorsAsync()
+        public IEnumerable<Floor> GetServicingFloors()
         {
-            throw new NotImplementedException();
+            lock (_elevatorQueueLock)
+            {
+                return _elevatorQueue.ToList();
+            }
         }
 
-        public Task<Floor> GetNextFloorAsync()
+        public Floor? GetNextFloor()
         {
-            throw new NotImplementedException();
+            lock (_elevatorQueueLock)
+            {
+                return _elevatorQueue.Count == 0 ? null : _elevatorQueue.Peek();
+            }
+        }
+
+        Floor? IElevatorService.RemoveNextFloor()
+        {
+            lock (_elevatorQueueLock)
+            {
+                return _elevatorQueue.Count == 0 ? null : _elevatorQueue.Dequeue();
+            }
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Threading.Tasks;
 using ElevatorControl.Application;
 using ElevatorControl.Application.Models;
 using ElevatorControl.Contract;
@@ -28,10 +27,10 @@ namespace ElevatorControl.Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpPut("floors")]
-        public async Task<IActionResult> AddFloorAsync([FromBody]ElevatorFloorRequest floor)
+        public IActionResult AddFloorAsync([FromBody]ElevatorFloorRequest floor)
         {
             _logger.LogDebug("Adding floor {number} to elevator queue", floor);
-            await _elevatorService.AddFloorAsync(new Floor() {Number = floor.Number});
+            _elevatorService.AddFloor(new Floor() {Number = floor.Number});
             return Ok();
         }
 
@@ -40,10 +39,10 @@ namespace ElevatorControl.Api.Controllers
         /// </summary>
         [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpGet("floors")]
-        public async Task<ActionResult<IEnumerable<Floor>>> GetServicingFloorsAsync()
+        public ActionResult<IEnumerable<Floor>> GetServicingFloorsAsync()
         {
             _logger.LogDebug("Retrieving floors being serviced by the elevator");
-            var floors = await _elevatorService.GetServicingFloorsAsync();
+            var floors = _elevatorService.GetServicingFloors();
             return Ok(floors);
         }
 
@@ -52,10 +51,10 @@ namespace ElevatorControl.Api.Controllers
         /// </summary>
         [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpGet("floors/next")]
-        public async Task<ActionResult<Floor>> GetNextFloorAsync()
+        public ActionResult<Floor> GetNextFloorAsync()
         {
             _logger.LogDebug("Retrieving the next floor being serviced by the elevator");
-            var nextFloor = await _elevatorService.GetNextFloorAsync();
+            var nextFloor = _elevatorService.GetNextFloor();
             return Ok(nextFloor);
         }
     }
