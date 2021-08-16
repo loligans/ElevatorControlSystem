@@ -8,4 +8,9 @@
         <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\ElevatorControl.Application\ElevatorControl.Application.csproj" />
+      <ProjectReference Include="..\ElevatorControl.Contract\ElevatorControl.Contract.csproj" />
+    </ItemGroup>
+
 </Project>
